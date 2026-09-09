@@ -72,6 +72,15 @@
   position: relative;
 }
 
+/* `.bn-block-content` est un conteneur flex (row) : sans quoi le bloc DSFR
+   (flex item) se réduit à la largeur de son contenu. On le force à occuper
+   toute la largeur de l'éditeur, comme sur la page publiée. */
+.bn-block-content > .dsfr-block,
+.bn-block-content > .dsfr-editor-accordion-section {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .dsfr-block__gear {
   position: absolute;
   top: 0.25rem;
