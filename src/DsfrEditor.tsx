@@ -35,6 +35,11 @@ export function useDsfrEditor(
   return useCreateBlockNote({
     schema: dsfrSchema,
     dictionary: frDictionary,
+    // On désactive le reset global de BlockNote (`.bn-default-styles`, qui pose
+    // `font-size:inherit; margin:0` sur TOUS les p/h*/li de l'éditeur — donc
+    // aussi les titres des composants DSFR). On le réimplémente dans
+    // `styles/dsfr-blocknote-theme.css`, ciblé sur le seul contenu éditable.
+    defaultStyles: false,
     initialContent: options.initialContent?.length
       ? options.initialContent
       : undefined,

@@ -2,8 +2,15 @@
  * Thème BlockNote aligné sur le DSFR :
  *  - variables `--bn-*` mappées sur les tokens DSFR (clair + sombre) ;
  *  - police Marianne ;
- *  - pont typographique léger pour que `.bn-editor` ressemble à `fr-content` ;
+ *  - reset du contenu éditable (remplace `.bn-default-styles`, désactivé) ;
  *  - engrenage de configuration des blocs et section d'accordéon.
+ *
+ * Principe : les composants DSFR (`.fr-callout`, `.fr-alert`, `.fr-highlight`…)
+ * sont rendus avec un markup identique en édition et à la publication, et
+ * stylés UNIQUEMENT par `dsfr.min.css`. Rien ici ne redéclare de valeur DSFR
+ * (taille de police, marge, padding) : ça garantit que les deux vues restent
+ * synchro quand le DSFR évolue. La seule contrainte : ne pas laisser les
+ * resets/typo de BlockNote « fuiter » sur les éléments des composants DSFR.
  */
 
 /* --- Variables BlockNote -> tokens DSFR ---------------------------------- */
@@ -41,29 +48,32 @@
   --bn-colors-selected-text: var(--text-inverted-grey);
 }
 
-/* --- Pont typographique sur le contenu éditable ------------------------- */
+/* --- Reset du contenu éditable (remplace `.bn-default-styles`) ----------
+   `defaultStyles: false` (dans `useDsfrEditor`) désactive le reset global de
+   BlockNote, qui posait `font-size: inherit; margin: 0` sur TOUS les titres,
+   paragraphes et items de liste de `.bn-editor` — donc aussi sur
+   `.fr-callout__title`, `.fr-alert__title`, `.fr-highlight .fr-text--sm`… et
+   provoquait un écart avec l'aperçu publié.
+
+   On ne remet que le strict nécessaire (marges et paddings à zéro pour la mise
+   en page compacte de BlockNote), ciblé sur le SEUL contenu éditable — repérable
+   par `.bn-inline-content` (posée par BlockNote sur l'élément de contenu, ou
+   fusionnée sur le `contentRef` d'un bloc custom). On NE touche PAS aux tailles
+   de police ni au line-height : ils viennent des règles d'éléments nus et des
+   classes du DSFR (`dsfr.min.css`), donc identiques en édition et à la
+   publication, sans rien redéclarer ici. */
 .bn-editor {
   font-family: "Marianne", arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
   --bn-editor-font-size: 1rem;
 }
 
-.bn-container .bn-editor h2 {
-  font-size: 1.75rem;
-  line-height: 2.25rem;
-  font-weight: 700;
-  margin: 1.5rem 0 0.5rem;
-}
-.bn-container .bn-editor h3 {
-  font-size: 1.375rem;
-  line-height: 1.75rem;
-  font-weight: 700;
-  margin: 1.25rem 0 0.5rem;
-}
-.bn-container .bn-editor h4 {
-  font-size: 1.25rem;
-  line-height: 1.5rem;
-  font-weight: 700;
-  margin: 1rem 0 0.5rem;
+:is(h1, h2, h3, h4, h5, h6, p, li).bn-inline-content,
+.bn-inline-content > :is(h1, h2, h3, h4, h5, h6, p, li) {
+  margin: 0;
+  padding: 0;
+  min-width: 2px;
 }
 
 /* --- Bloc DSFR en édition : engrenage de configuration ---------------- */
@@ -74,7 +84,13 @@
 
 /* `.bn-block-content` est un conteneur flex (row) : sans quoi le bloc DSFR
    (flex item) se réduit à la largeur de son contenu. On le force à occuper
-   toute la largeur de l'éditeur, comme sur la page publiée. */
+   toute la largeur de l'éditeur, comme sur la page publiée. On retire aussi le
+   `padding: 3px 0` de BlockNote : le composant DSFR gère son propre espacement
+   (`margin`/`padding` de `.fr-callout`, `.fr-alert`…), identique à l'aperçu. */
+.bn-block-content:has(> .dsfr-block),
+.bn-block-content:has(> .dsfr-editor-accordion-section) {
+  padding: 0;
+}
 .bn-block-content > .dsfr-block,
 .bn-block-content > .dsfr-editor-accordion-section {
   flex: 1 1 auto;

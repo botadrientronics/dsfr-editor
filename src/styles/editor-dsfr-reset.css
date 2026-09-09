@@ -24,13 +24,6 @@
   all: revert;
 }
 
-/* Le contenu éditable, lui, doit garder l'allure DSFR : on ne le reset pas. */
-.bn-container .bn-editor :where(button, a, input, select, textarea) {
-  /* rien : laissé aux règles de .dsfr-block-config et du markup .fr-* */
-}
-
-/* Les <select>/<input> de la barre de config d'un bloc sont des composants DSFR
-   à part entière : on les laisse tranquilles. */
-.bn-editor .dsfr-block-config :where(button, a, input, select, label) {
-  all: revert-layer;
-}
+/* Le contenu éditable garde l'allure DSFR : on ne touche pas à ce qui est dans
+   `.bn-editor` (markup `.fr-*` des blocs, boutons DSFR…). La modale de config
+   des blocs est rendue hors de l'éditeur, donc non concernée. */
