@@ -50,7 +50,9 @@ npm run build           # tsc -> dist/
 npm run demo:build
 ```
 
-`npm install` lance `copy-dsfr-to-public` (assets DSFR dans `demo/public/dsfr/`).
+La démo est déployée automatiquement sur **GitHub Pages** à chaque push sur `main` :
+**https://botadrientronics.github.io/dsfr-editor/**
+(Vite bundle les polices et icônes DSFR ; pas de `copy-dsfr-to-public` nécessaire.)
 
 ## Utilisation (dans une app)
 
