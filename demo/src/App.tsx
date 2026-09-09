@@ -8,6 +8,7 @@ import { PublishedView } from "./PublishedView";
 type Mode = "edit" | "published";
 type Theme = "light" | "dark" | "system";
 
+const REPO_URL = "https://github.com/botadrientronics/dsfr-editor";
 const THEME_KEY = "dsfr-editor:theme";
 const THEME_LABELS: Record<Theme, string> = {
   light: "Clair",
@@ -109,6 +110,14 @@ export default function App() {
             ))}
           </div>
         </div>
+        <a
+          className="fr-btn fr-btn--tertiary fr-btn--sm fr-icon-github-fill fr-btn--icon-left"
+          href={REPO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Code source
+        </a>
         <button
           type="button"
           className="fr-btn fr-btn--secondary fr-btn--sm"

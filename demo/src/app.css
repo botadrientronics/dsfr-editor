@@ -17,10 +17,8 @@
 .demo-title {
   font-size: 1rem;
   color: var(--text-title-grey);
-}
-
-.demo-bar > :last-child {
-  margin-left: auto;
+  /* cale le titre à gauche, tout le reste (contrôles + liens) à droite */
+  margin-right: auto;
 }
 
 .demo-content {
