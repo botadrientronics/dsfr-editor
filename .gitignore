@@ -1,0 +1,7 @@
+node_modules
+dist
+demo/dist
+demo/public/dsfr
+*.log
+.DS_Store
+.vite

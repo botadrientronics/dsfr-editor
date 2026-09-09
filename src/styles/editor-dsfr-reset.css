@@ -1,0 +1,36 @@
+/*
+ * Neutralise le CSS global DSFR sur le *chrome* de BlockNote (menus, barres
+ * d'outils, poignées) — SANS toucher au contenu éditable `.bn-editor`.
+ *
+ * `dsfr.min.css` restyle les balises nues (`button`, `a`, `input`, `svg`…) sur
+ * tout le document ; sans ça, le slash menu et les toolbars héritent des
+ * boutons bleus / soulignements DSFR.
+ *
+ * `:where(...)` garde une spécificité nulle : les règles propres de BlockNote
+ * continuent de gagner.
+ */
+
+.bn-container
+  :where(
+    .bn-menu,
+    .bn-toolbar,
+    .bn-side-menu,
+    .bn-drag-handle-menu,
+    .bn-suggestion-menu,
+    .bn-link-toolbar,
+    .bn-color-picker-dropdown,
+    [class*="ak-"]
+  ) :where(button, a, input, select, textarea, svg) {
+  all: revert;
+}
+
+/* Le contenu éditable, lui, doit garder l'allure DSFR : on ne le reset pas. */
+.bn-container .bn-editor :where(button, a, input, select, textarea) {
+  /* rien : laissé aux règles de .dsfr-block-config et du markup .fr-* */
+}
+
+/* Les <select>/<input> de la barre de config d'un bloc sont des composants DSFR
+   à part entière : on les laisse tranquilles. */
+.bn-editor .dsfr-block-config :where(button, a, input, select, label) {
+  all: revert-layer;
+}

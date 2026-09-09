@@ -1,0 +1,156 @@
+/*
+ * Thème BlockNote aligné sur le DSFR :
+ *  - variables `--bn-*` mappées sur les tokens DSFR (clair + sombre) ;
+ *  - police Marianne ;
+ *  - pont typographique léger pour que `.bn-editor` ressemble à `fr-content` ;
+ *  - styles de la barre de configuration des blocs et de la section d'accordéon.
+ */
+
+/* --- Variables BlockNote -> tokens DSFR ---------------------------------- */
+.bn-root {
+  --bn-font-family: "Marianne", arial, sans-serif;
+  --bn-border-radius: 0;
+
+  --bn-colors-editor-text: var(--text-default-grey);
+  --bn-colors-editor-background: var(--background-default-grey);
+
+  --bn-colors-menu-text: var(--text-default-grey);
+  --bn-colors-menu-background: var(--background-overlap-grey);
+
+  --bn-colors-tooltip-text: var(--text-default-grey);
+  --bn-colors-tooltip-background: var(--background-overlap-grey);
+
+  --bn-colors-hovered-text: var(--text-default-grey);
+  --bn-colors-hovered-background: var(--background-contrast-grey);
+
+  --bn-colors-selected-text: var(--text-inverted-grey);
+  --bn-colors-selected-background: var(--background-action-high-blue-france);
+
+  --bn-colors-disabled-text: var(--text-disabled-grey);
+  --bn-colors-disabled-background: var(--background-disabled-grey);
+
+  --bn-colors-shadow: var(--border-default-grey);
+  --bn-colors-border: var(--border-default-grey);
+  --bn-colors-side-menu: var(--text-mention-grey);
+}
+
+/* BlockNote ne redéfinit les couleurs qu'via `theme="dark"` -> `[data-color-scheme]`.
+   Les tokens DSFR ci-dessus suivent déjà `data-fr-theme`, donc rien à faire ici :
+   ce bloc reste comme point d'accroche si un ajustement sombre devient nécessaire. */
+.bn-root[data-color-scheme="dark"] {
+  --bn-colors-selected-text: var(--text-inverted-grey);
+}
+
+/* --- Pont typographique sur le contenu éditable ------------------------- */
+.bn-editor {
+  font-family: "Marianne", arial, sans-serif;
+  --bn-editor-font-size: 1rem;
+}
+
+.bn-container .bn-editor h2 {
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0.5rem;
+}
+.bn-container .bn-editor h3 {
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  margin: 1.25rem 0 0.5rem;
+}
+.bn-container .bn-editor h4 {
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+}
+
+/* --- Bloc DSFR en édition -------------------------------------------- */
+.dsfr-block {
+  display: block;
+}
+
+/* --- Barre de configuration d'un bloc DSFR ----------------------------- */
+.dsfr-block-config {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px dashed var(--border-default-grey);
+  border-radius: 0.25rem;
+  background: var(--background-alt-grey);
+  user-select: none;
+}
+
+/* Révélée au survol du bloc ou quand un de ses champs a le focus. */
+.bn-block-content:hover > .dsfr-block .dsfr-block-config,
+.bn-block-content:focus-within > .dsfr-block .dsfr-block-config,
+.dsfr-block-config:focus-within {
+  display: flex;
+}
+
+.dsfr-block-config .fr-select-group,
+.dsfr-block-config .fr-input-group,
+.dsfr-block-config .fr-select,
+.dsfr-block-config .fr-input {
+  margin: 0;
+}
+.dsfr-block-config .fr-label {
+  font-size: 0.75rem;
+  line-height: 1.1;
+  margin: 0 0 0.25rem;
+  font-weight: 500;
+}
+.dsfr-block-config .fr-select,
+.dsfr-block-config .fr-input {
+  min-width: 11rem;
+  max-width: 16rem;
+  height: 2rem;
+  padding: 0 2rem 0 0.5rem;
+  font-size: 0.875rem;
+  background-size: 1rem;
+}
+.dsfr-block-config > * {
+  flex: 0 1 auto;
+}
+
+/* --- Section d'accordéon en édition -----------------------------------
+   Une section = le bloc courant (en-tête) + son groupe d'enfants (corps).
+   On borde les deux pour donner l'impression d'un bloc accordéon unique. */
+.dsfr-editor-accordion-section {
+  border: 1px solid var(--border-default-grey);
+}
+
+.dsfr-editor-accordion-title {
+  display: block;
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  color: var(--text-title-grey);
+}
+
+/* le bouton de repli de BlockNote, aligné dans l'en-tête d'accordéon */
+.dsfr-editor-accordion-section .bn-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--background-alt-grey);
+}
+.dsfr-editor-accordion-section .bn-toggle-button {
+  padding: 0 0.25rem 0 0.5rem;
+  color: var(--text-action-high-blue-france);
+}
+
+/* corps de la section : le groupe d'enfants qui suit l'en-tête.
+   `.bn-block-content` est imbriqué dans un `.react-renderer`, d'où le `:has()`. */
+.bn-block:has(
+    > .react-renderer [data-content-type="dsfrAccordionSection"]
+  )
+  > .bn-block-group {
+  border: 1px solid var(--border-default-grey);
+  border-top: none;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 1rem;
+}

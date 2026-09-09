@@ -1,0 +1,118 @@
+/**
+ * Bloc « Encadré » (DSFR CallOut).
+ *
+ * Corps rich-text éditable en place (`content: "inline"`).
+ * Le markup est écrit à la main — identique en édition et à l'export — pour
+ * garantir que `render` et `toExternalHTML` produisent exactement la même chose
+ * et rester indépendant de la structure interne du composant react-dsfr.
+ */
+import { createReactBlockSpec } from "@blocknote/react";
+import {
+  ACCENT_COLOR_OPTIONS,
+  CALLOUT_ICON_OPTIONS,
+  type AccentColor,
+  type CalloutIcon,
+} from "./dsfrOptions";
+import { BlockConfigBar, BlockShell, serializeForKey } from "./blockKit";
+
+const ACCENT_VALUES = ACCENT_COLOR_OPTIONS.map((o) => o.value);
+const ICON_VALUES = CALLOUT_ICON_OPTIONS.map((o) => o.value);
+
+const calloutClassName = (colorVariant: string, icon: string) =>
+  [
+    "fr-callout",
+    colorVariant && `fr-callout--${colorVariant}`,
+    icon,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+/** Markup DSFR statique commun à l'édition et à l'export. */
+function CalloutMarkup(props: {
+  colorVariant: string;
+  icon: string;
+  title: string;
+  contentRef: (node: HTMLElement | null) => void;
+}) {
+  return (
+    <div className={calloutClassName(props.colorVariant, props.icon)}>
+      {props.title ? (
+        <p className="fr-callout__title">{props.title}</p>
+      ) : null}
+      <div className="fr-callout__text" ref={props.contentRef} />
+    </div>
+  );
+}
+
+export const calloutBlock = createReactBlockSpec(
+  {
+    type: "dsfrCallout",
+    content: "inline",
+    propSchema: {
+      colorVariant: { default: "" as AccentColor, values: ACCENT_VALUES },
+      icon: { default: "" as CalloutIcon, values: ICON_VALUES },
+      title: { default: "" },
+    },
+  },
+  {
+    render: (props) => {
+      const { colorVariant, icon, title } = props.block.props;
+      const update = (patch: Partial<typeof props.block.props>) =>
+        props.editor.updateBlock(props.block, {
+          type: "dsfrCallout",
+          props: patch,
+        });
+      return (
+        <BlockShell
+          name="Encadré"
+          resetKey={serializeForKey(props.block.props)}
+          config={
+            <BlockConfigBar
+              fields={[
+                {
+                  kind: "select",
+                  key: "colorVariant",
+                  label: "Couleur d'accent",
+                  value: colorVariant,
+                  options: ACCENT_COLOR_OPTIONS,
+                  onChange: (v) => update({ colorVariant: v as AccentColor }),
+                },
+                {
+                  kind: "select",
+                  key: "icon",
+                  label: "Icône",
+                  value: icon,
+                  options: CALLOUT_ICON_OPTIONS,
+                  onChange: (v) => update({ icon: v as CalloutIcon }),
+                },
+                {
+                  kind: "text",
+                  key: "title",
+                  label: "Titre (optionnel)",
+                  value: title,
+                  placeholder: "Sans titre",
+                  onChange: (v) => update({ title: v }),
+                },
+              ]}
+            />
+          }
+        >
+          <CalloutMarkup
+            colorVariant={colorVariant}
+            icon={icon}
+            title={title}
+            contentRef={props.contentRef}
+          />
+        </BlockShell>
+      );
+    },
+    toExternalHTML: (props) => (
+      <CalloutMarkup
+        colorVariant={props.block.props.colorVariant}
+        icon={props.block.props.icon}
+        title={props.block.props.title}
+        contentRef={props.contentRef}
+      />
+    ),
+  },
+);

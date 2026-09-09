@@ -1,0 +1,4 @@
+/* Point d'entrée CSS de dsfr-editor. À importer APRÈS le CSS DSFR et le CSS
+   BlockNote (`@blocknote/core/style.css`, `@blocknote/ariakit/style.css`). */
+@import "./editor-dsfr-reset.css";
+@import "./dsfr-blocknote-theme.css";
