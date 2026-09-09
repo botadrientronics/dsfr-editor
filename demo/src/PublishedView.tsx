@@ -16,7 +16,13 @@ export function PublishedView({ editor }: { editor: DsfrEditorInstance }) {
     // Hors de la pile de rendu/commit React : `renderPublishedHtml` déclenche
     // un `flushSync` interne (sérialisation des blocs custom).
     const id = setTimeout(() => {
-      setHtml(renderPublishedHtml(editor, editor.document));
+      // `wrapInContainer: false` : la colonne de la démo (`.demo-column`) fournit
+      // déjà la largeur — on l'aligne ainsi sur la vue édition.
+      setHtml(
+        renderPublishedHtml(editor, editor.document, {
+          wrapInContainer: false,
+        }),
+      );
     }, 0);
     return () => clearTimeout(id);
   }, [editor]);

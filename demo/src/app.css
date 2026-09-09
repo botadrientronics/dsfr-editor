@@ -37,4 +37,7 @@
 
 .published-root {
   padding-top: 1rem;
+  /* Aligne la colonne de contenu sur celle de l'éditeur : BlockNote applique
+     `padding-inline: 54px` sur `.bn-editor` pour loger la poignée `⋮⋮`. */
+  padding-inline: 54px;
 }
