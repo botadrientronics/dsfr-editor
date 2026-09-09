@@ -55,13 +55,12 @@
    `.fr-callout__title`, `.fr-alert__title`, `.fr-highlight .fr-text--sm`… et
    provoquait un écart avec l'aperçu publié.
 
-   On ne remet que le strict nécessaire (marges et paddings à zéro pour la mise
-   en page compacte de BlockNote), ciblé sur le SEUL contenu éditable — repérable
-   par `.bn-inline-content` (posée par BlockNote sur l'élément de contenu, ou
-   fusionnée sur le `contentRef` d'un bloc custom). On NE touche PAS aux tailles
-   de police ni au line-height : ils viennent des règles d'éléments nus et des
-   classes du DSFR (`dsfr.min.css`), donc identiques en édition et à la
-   publication, sans rien redéclarer ici. */
+   On ne touche NI aux tailles de police, NI aux marges : elles viennent des
+   règles d'éléments nus du DSFR (`h2 { font-size: 1.75rem; margin: var(--title-spacing) }`,
+   `p { margin: var(--text-spacing) }`, `--*-spacing` définis globalement), donc
+   identiques en édition et à la publication sans rien redéclarer ici. On garde
+   juste `min-width` (visibilité du curseur) et `padding: 0` (BlockNote), ciblés
+   sur le SEUL contenu éditable via `.bn-inline-content`. */
 .bn-editor {
   font-family: "Marianne", arial, sans-serif;
   font-size: 16px;
@@ -71,9 +70,21 @@
 
 :is(h1, h2, h3, h4, h5, h6, p, li).bn-inline-content,
 .bn-inline-content > :is(h1, h2, h3, h4, h5, h6, p, li) {
-  margin: 0;
   padding: 0;
   min-width: 2px;
+}
+
+/* Items de liste : en édition, BlockNote rend `<div><p class="bn-inline-content">`
+   au lieu d'un `<li>` — le `<p>` hérite alors de `p { margin: var(--text-spacing) }`
+   du DSFR (24px) et écarte trop les puces. En publication ce sont de vrais
+   `<li>` (marge `--li-bottom`), donc on ramène l'édition à zéro. */
+:is(
+    [data-content-type="bulletListItem"],
+    [data-content-type="numberedListItem"],
+    [data-content-type="checkListItem"]
+  )
+  > .bn-inline-content {
+  margin: 0;
 }
 
 /* --- Bloc DSFR en édition : engrenage de configuration ---------------- */
