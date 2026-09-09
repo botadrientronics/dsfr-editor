@@ -13,7 +13,7 @@ import {
   type AccentColor,
   type CalloutIcon,
 } from "./dsfrOptions";
-import { BlockConfigBar, BlockShell, serializeForKey } from "./blockKit";
+import { BlockShell, serializeForKey } from "./blockKit";
 
 const ACCENT_VALUES = ACCENT_COLOR_OPTIONS.map((o) => o.value);
 const ICON_VALUES = CALLOUT_ICON_OPTIONS.map((o) => o.value);
@@ -57,45 +57,12 @@ export const calloutBlock = createReactBlockSpec(
   {
     render: (props) => {
       const { colorVariant, icon, title } = props.block.props;
-      const update = (patch: Partial<typeof props.block.props>) =>
-        props.editor.updateBlock(props.block, {
-          type: "dsfrCallout",
-          props: patch,
-        });
       return (
         <BlockShell
           name="Encadré"
           resetKey={serializeForKey(props.block.props)}
-          config={
-            <BlockConfigBar
-              fields={[
-                {
-                  kind: "select",
-                  key: "colorVariant",
-                  label: "Couleur d'accent",
-                  value: colorVariant,
-                  options: ACCENT_COLOR_OPTIONS,
-                  onChange: (v) => update({ colorVariant: v as AccentColor }),
-                },
-                {
-                  kind: "select",
-                  key: "icon",
-                  label: "Icône",
-                  value: icon,
-                  options: CALLOUT_ICON_OPTIONS,
-                  onChange: (v) => update({ icon: v as CalloutIcon }),
-                },
-                {
-                  kind: "text",
-                  key: "title",
-                  label: "Titre (optionnel)",
-                  value: title,
-                  placeholder: "Sans titre",
-                  onChange: (v) => update({ title: v }),
-                },
-              ]}
-            />
-          }
+          blockId={props.block.id}
+          blockType="dsfrCallout"
         >
           <CalloutMarkup
             colorVariant={colorVariant}

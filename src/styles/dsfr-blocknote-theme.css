@@ -3,7 +3,7 @@
  *  - variables `--bn-*` mappées sur les tokens DSFR (clair + sombre) ;
  *  - police Marianne ;
  *  - pont typographique léger pour que `.bn-editor` ressemble à `fr-content` ;
- *  - styles de la barre de configuration des blocs et de la section d'accordéon.
+ *  - engrenage de configuration des blocs et section d'accordéon.
  */
 
 /* --- Variables BlockNote -> tokens DSFR ---------------------------------- */
@@ -66,55 +66,32 @@
   margin: 1rem 0 0.5rem;
 }
 
-/* --- Bloc DSFR en édition -------------------------------------------- */
+/* --- Bloc DSFR en édition : engrenage de configuration ---------------- */
 .dsfr-block {
   display: block;
+  position: relative;
 }
 
-/* --- Barre de configuration d'un bloc DSFR ----------------------------- */
-.dsfr-block-config {
-  display: none;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  align-items: flex-start;
-  margin-bottom: 0.5rem;
-  padding: 0.625rem 0.75rem;
-  border: 1px dashed var(--border-default-grey);
-  border-radius: 0.25rem;
-  background: var(--background-alt-grey);
+.dsfr-block__gear {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.12s ease;
   user-select: none;
 }
+.bn-block-content:hover .dsfr-block__gear,
+.bn-block-content:focus-within .dsfr-block__gear,
+.dsfr-block__gear:focus-within {
+  opacity: 1;
+}
 
-/* Révélée au survol du bloc ou quand un de ses champs a le focus. */
-.bn-block-content:hover > .dsfr-block .dsfr-block-config,
-.bn-block-content:focus-within > .dsfr-block .dsfr-block-config,
-.dsfr-block-config:focus-within {
+/* Corps de la modale de config : champs empilés, pleine largeur. */
+.dsfr-block-config-modal {
   display: flex;
-}
-
-.dsfr-block-config .fr-select-group,
-.dsfr-block-config .fr-input-group,
-.dsfr-block-config .fr-select,
-.dsfr-block-config .fr-input {
-  margin: 0;
-}
-.dsfr-block-config .fr-label {
-  font-size: 0.75rem;
-  line-height: 1.1;
-  margin: 0 0 0.25rem;
-  font-weight: 500;
-}
-.dsfr-block-config .fr-select,
-.dsfr-block-config .fr-input {
-  min-width: 11rem;
-  max-width: 16rem;
-  height: 2rem;
-  padding: 0 2rem 0 0.5rem;
-  font-size: 0.875rem;
-  background-size: 1rem;
-}
-.dsfr-block-config > * {
-  flex: 0 1 auto;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 /* --- Section d'accordéon en édition -----------------------------------

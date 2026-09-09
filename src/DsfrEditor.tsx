@@ -21,6 +21,7 @@ import "@blocknote/ariakit/style.css";
 import { dsfrSchema, type DsfrEditorInstance, type DsfrPartialBlock } from "./schema";
 import { getDsfrSlashMenuGetItems } from "./slashMenu";
 import { useDsfrColorScheme } from "./useDsfrColorScheme";
+import { BlockConfigModalHost } from "./blocks";
 
 export type UseDsfrEditorOptions = {
   /** Document initial (arbre de blocs BlockNote). Lu une seule fois. */
@@ -66,15 +67,19 @@ export function DsfrEditor({
   const getItems = useMemo(() => getDsfrSlashMenuGetItems(editor), [editor]);
 
   return (
-    <BlockNoteView
-      editor={editor}
-      editable={editable}
-      theme={colorScheme}
-      slashMenu={false}
-      className={["dsfr-editor", className].filter(Boolean).join(" ")}
-      onChange={() => onChange?.(editor.document)}
-    >
-      <SuggestionMenuController triggerCharacter="/" getItems={getItems} />
-    </BlockNoteView>
+    <>
+      <BlockNoteView
+        editor={editor}
+        editable={editable}
+        theme={colorScheme}
+        slashMenu={false}
+        className={["dsfr-editor", className].filter(Boolean).join(" ")}
+        onChange={() => onChange?.(editor.document)}
+      >
+        <SuggestionMenuController triggerCharacter="/" getItems={getItems} />
+      </BlockNoteView>
+      {/* Modale de config des blocs : montée HORS de `.bn-editor`. */}
+      {editable && <BlockConfigModalHost editor={editor} />}
+    </>
   );
 }

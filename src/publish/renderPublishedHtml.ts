@@ -33,7 +33,8 @@ function accordionSectionHtml(
   section: DsfrPartialBlock,
 ): string {
   const id = `acc-${(section as { id?: string }).id ?? Math.random().toString(36).slice(2)}`;
-  const title = inlineToHtml(editor, section) || "Section";
+  const title =
+    inlineToHtml(editor, section).replace(/￼/g, "").trim() || "Section";
   const body = serialize(editor, (section.children ?? []) as DsfrPartialBlock[]);
   return (
     `<section class="fr-accordion">` +
@@ -76,21 +77,26 @@ function serialize(
 }
 
 /**
- * Nettoie le HTML sérialisé : retire les classes `bn-*` et les attributs
- * `data-*` internes (propriétés de bloc, niveaux d'imbrication…), en gardant
- * `data-fr-*` (nécessaire à la JS DSFR) et l'accessibilité. No-op sans DOM.
+ * Nettoie le HTML sérialisé :
+ *  - retire le placeholder `￼` (U+FFFC) que BlockNote insère dans les blocs
+ *    inline vides (utile seulement pour un aller-retour HTML, jamais ici) ;
+ *  - retire les classes `bn-*` et les attributs `data-*` internes, en gardant
+ *    `data-fr-*` (JS DSFR) et l'accessibilité ;
+ *  - supprime les éléments de bloc devenus vides.
+ * Sans DOM : seul le strip de `￼` est appliqué.
  */
 function cleanup(html: string): string {
+  const stripped = html.split("￼").join("");
   if (typeof DOMParser === "undefined") {
-    return html;
+    return stripped;
   }
   const doc = new DOMParser().parseFromString(
-    `<div id="__root">${html}</div>`,
+    `<div id="__root">${stripped}</div>`,
     "text/html",
   );
   const root = doc.getElementById("__root");
   if (!root) {
-    return html;
+    return stripped;
   }
   root.querySelectorAll("*").forEach((el) => {
     const kept = el.className
@@ -110,6 +116,18 @@ function cleanup(html: string): string {
       }
     }
   });
+  // Éléments de bloc laissés vides (aucun enfant élément, aucun texte).
+  // Parcours en ordre inverse (feuilles avant parents) pour qu'un
+  // `<blockquote><p></p></blockquote>` s'effondre entièrement.
+  // Le garde `children.length === 0` préserve les conteneurs de blocs enfants
+  // (`.fr-collapse`, `ul`, `section.fr-accordion`…).
+  [...root.querySelectorAll("p, blockquote, li, h2, h3, h4")]
+    .reverse()
+    .forEach((el) => {
+      if (el.children.length === 0 && !(el.textContent ?? "").trim()) {
+        el.remove();
+      }
+    });
   return root.innerHTML;
 }
 

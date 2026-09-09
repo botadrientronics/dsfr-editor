@@ -12,7 +12,7 @@
  */
 import { createReactBlockSpec } from "@blocknote/react";
 import { SEVERITY_OPTIONS, SEVERITY_ROLE, type Severity } from "./dsfrOptions";
-import { BlockConfigBar, BlockShell, serializeForKey } from "./blockKit";
+import { BlockShell, serializeForKey } from "./blockKit";
 
 const SEVERITY_VALUES = SEVERITY_OPTIONS.map((o) => o.value);
 
@@ -50,44 +50,12 @@ export const alertBlock = createReactBlockSpec(
   {
     render: (props) => {
       const { severity, small, title } = props.block.props;
-      const update = (patch: Partial<typeof props.block.props>) =>
-        props.editor.updateBlock(props.block, {
-          type: "dsfrAlert",
-          props: patch,
-        });
       return (
         <BlockShell
           name="Alerte"
           resetKey={serializeForKey(props.block.props)}
-          config={
-            <BlockConfigBar
-              fields={[
-                {
-                  kind: "select",
-                  key: "severity",
-                  label: "Sévérité",
-                  value: severity,
-                  options: SEVERITY_OPTIONS,
-                  onChange: (v) => update({ severity: v as Severity }),
-                },
-                {
-                  kind: "boolean",
-                  key: "small",
-                  label: "Version compacte",
-                  value: small,
-                  onChange: (v) => update({ small: v }),
-                },
-                {
-                  kind: "text",
-                  key: "title",
-                  label: small ? "Titre (optionnel)" : "Titre",
-                  value: title,
-                  placeholder: small ? "Sans titre" : "Titre de l'alerte",
-                  onChange: (v) => update({ title: v }),
-                },
-              ]}
-            />
-          }
+          blockId={props.block.id}
+          blockType="dsfrAlert"
         >
           <AlertMarkup
             severity={severity}

@@ -33,7 +33,7 @@ export {
   accordionSectionBlock,
   BlockErrorBoundary,
   BlockShell,
-  BlockConfigBar,
+  BlockConfigModalHost,
   orUndef,
 } from "./blocks";
 export * from "./blocks/dsfrOptions";

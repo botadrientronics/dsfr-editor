@@ -7,8 +7,13 @@ export * from "./dsfrOptions";
 export {
   BlockErrorBoundary,
   BlockShell,
-  BlockConfigBar,
   orUndef,
   serializeForKey,
 } from "./blockKit";
-export type { ConfigField } from "./blockKit";
+export {
+  BlockGearButton,
+  BlockConfigModalHost,
+  ConfigFields,
+  configFieldsFor,
+} from "./blockConfig";
+export type { ConfigField, ConfigPanel } from "./blockConfig";

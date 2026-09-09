@@ -4,7 +4,7 @@
  */
 import { createReactBlockSpec } from "@blocknote/react";
 import { HIGHLIGHT_SIZE_OPTIONS, type HighlightSize } from "./dsfrOptions";
-import { BlockConfigBar, BlockShell, serializeForKey } from "./blockKit";
+import { BlockShell, serializeForKey } from "./blockKit";
 
 const SIZE_VALUES = HIGHLIGHT_SIZE_OPTIONS.map((o) => o.value);
 
@@ -37,24 +37,8 @@ export const highlightBlock = createReactBlockSpec(
         <BlockShell
           name="Mise en relief"
           resetKey={serializeForKey(props.block.props)}
-          config={
-            <BlockConfigBar
-              fields={[
-                {
-                  kind: "select",
-                  key: "size",
-                  label: "Taille du texte",
-                  value: size,
-                  options: HIGHLIGHT_SIZE_OPTIONS,
-                  onChange: (v) =>
-                    props.editor.updateBlock(props.block, {
-                      type: "dsfrHighlight",
-                      props: { size: v as HighlightSize },
-                    }),
-                },
-              ]}
-            />
-          }
+          blockId={props.block.id}
+          blockType="dsfrHighlight"
         >
           <HighlightMarkup size={size} contentRef={props.contentRef} />
         </BlockShell>
